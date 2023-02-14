@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/compress"
@@ -13,8 +16,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	"log"
-	"time"
 )
 
 func main() {
@@ -40,6 +41,13 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello World!")
 	})
+
+	//user := models.User{FirstName: "Guest", Surname: "User", Password: "1"}
+	//err := user.Validate()
+	//if err.Errors != nil {
+	//	data, _ := json.Marshal(err.Errors)
+	//	fmt.Println(string(data))
+	//}
 
 	//Init & Log
 	log.Fatal(app.Listen(":3000"))
