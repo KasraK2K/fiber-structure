@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -44,11 +43,12 @@ func main() {
 
 	//user := models.User{FirstName: "Guest", Surname: "User", Password: "1"}
 	//err := user.Validate()
+	//fmt.Println(err.ToJson())
 	//if err.Errors != nil {
 	//	data, _ := json.Marshal(err.Errors)
 	//	fmt.Println(string(data))
 	//}
 
 	//Init & Log
-	log.Fatal(app.Listen(":3000"))
+	//log.Fatal(app.Listen(":3000"))
 }
