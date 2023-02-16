@@ -1,6 +1,7 @@
 package common
 
 import (
+	"encoding/json"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -12,6 +13,15 @@ type ValidationError struct {
 
 type ErrorResponse struct {
 	Errors []*ValidationError `json:"errors"`
+}
+
+func (err *ErrorResponse) ToJson() string {
+	if err.Errors != nil {
+		data, _ := json.Marshal(err.Errors)
+		return string(data)
+	} else {
+		return ""
+	}
 }
 
 func Validator(structInstance interface{}) ErrorResponse {
