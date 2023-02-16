@@ -1,4 +1,4 @@
-package common
+package postgres
 
 import (
 	"gorm.io/driver/postgres"
@@ -10,7 +10,7 @@ type Connection struct {
 	Conn *gorm.DB
 }
 
-func PgConnection() Connection {
+func Connect() Connection {
 	dsn := "host=localhost user=postgres password=postgres dbname=golang port=5432 sslmode=disable TimeZone=Asia/Tehran"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
