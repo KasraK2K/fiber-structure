@@ -1,6 +1,10 @@
 package main
 
 import (
+	"app/databases/pg"
+	"app/models"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -41,13 +45,32 @@ func main() {
 		return c.SendString("Hello World!")
 	})
 
-	//user := models.User{FirstName: "Guest", Surname: "User", Password: "1"}
-	//err := user.Validate()
-	//fmt.Println(err.ToJson())
-	//if err.Errors != nil {
-	//	data, _ := json.Marshal(err.Errors)
-	//	fmt.Println(string(data))
-	//}
+	//Fill User Struct
+	var user = models.User{
+		FirstName:  "Kasra",
+		Surname:    "Karami",
+		Email:      "Kasra_K2K@yahoo.com",
+		Password:   "12345678",
+		Permission: "1111111111",
+		IsActive:   true,
+		IsAdmin:    true,
+		Phone:      "09183619290",
+	}
+	//Validate User Struct
+	validationError := user.Validate()
+	if validationError.Errors != nil {
+		data, _ := json.Marshal(validationError.Errors)
+		fmt.Println(string(data))
+	}
+	//Create Table If Not Exist
+	var db = pg.Connect().Conn
+	err := db.AutoMigrate(&models.User{})
+	if err != nil {
+		return
+	}
+	//Create User
+	result := db.Create(&user)
+	fmt.Println(result)
 
 	//Init & Log
 	//log.Fatal(app.Listen(":3000"))
