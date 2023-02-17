@@ -1,10 +1,8 @@
 package main
 
 import (
-	"app/databases/pg"
-	"app/models"
-	"encoding/json"
-	"fmt"
+	"app/handlers"
+	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,7 +14,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
@@ -40,38 +37,8 @@ func main() {
 	app.Static("/", "./public")
 
 	//Routes
-	app.Get("/metrics", monitor.New(monitor.Config{Title: "Default Metrics Page"}))
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello World!")
-	})
-
-	//Fill User Struct
-	var user = models.User{
-		FirstName:  "Kasra",
-		Surname:    "Karami",
-		Email:      "Kasra_K2K@yahoo.com",
-		Password:   "12345678",
-		Permission: "1111111111",
-		IsActive:   true,
-		IsAdmin:    true,
-		Phone:      "09183619290",
-	}
-	//Validate User Struct
-	validationError := user.Validate()
-	if validationError.Errors != nil {
-		data, _ := json.Marshal(validationError.Errors)
-		fmt.Println(string(data))
-	}
-	//Create Table If Not Exist
-	var db = pg.Connect().Conn
-	err := db.AutoMigrate(&models.User{})
-	if err != nil {
-		return
-	}
-	//Create User
-	result := db.Create(&user)
-	fmt.Println(result)
+	handlers.Routes(app)
 
 	//Init & Log
-	//log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":3000"))
 }
