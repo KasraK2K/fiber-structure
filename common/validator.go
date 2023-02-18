@@ -6,9 +6,9 @@ import (
 )
 
 type ValidationError struct {
-	FailedField string
-	Tag         string
-	Value       string
+	FailedField string `json:"failed_field"`
+	Tag         string `json:"tag"`
+	Value       string `json:"value"`
 }
 
 type ErrorResponse struct {
@@ -30,6 +30,18 @@ func Validator(structInstance interface{}) ErrorResponse {
 	err := validate.Struct(structInstance)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
+			//fmt.Println("Tag", err.Tag())
+			//fmt.Println("ActualTag", err.ActualTag())
+			//fmt.Println("Field", err.Field())
+			//fmt.Println("Error", err.Error())
+			//fmt.Println("Param", err.Param())
+			//fmt.Println("Value", err.Value())
+			//fmt.Println("Kind", err.Kind())
+			//fmt.Println("Namespace", err.Namespace())
+			//fmt.Println("StructField", err.StructField())
+			//fmt.Println("StructNamespace", err.StructNamespace())
+			//fmt.Println("Type", err.Type())
+
 			element := ValidationError{
 				FailedField: err.StructNamespace(),
 				Tag:         err.Tag(),

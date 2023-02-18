@@ -3,8 +3,6 @@ package users
 import (
 	"app/databases/pg"
 	"app/models"
-	"encoding/json"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -27,37 +25,28 @@ func GetOneUser(c *fiber.Ctx) error {
 }
 
 func CreateUser(c *fiber.Ctx) error {
-	//Fill User Struct
-	var user = models.User{
-		FirstName:  "Kasra",
-		Surname:    "Karami",
-		Email:      "Kasra_K2K@yahoo.com",
-		Password:   "12345678",
-		Permission: "1111111111",
-		IsActive:   true,
-		IsAdmin:    true,
-		Phone:      "09183619290",
+	user := new(models.User)
+	parseError := c.BodyParser(user)
+	if parseError != nil {
+		return parseError
 	}
 
-	//Validate User Struct
+	////Validate User Struct
 	validationError := user.Validate()
 	if validationError.Errors != nil {
-		data, _ := json.Marshal(validationError.Errors)
-		fmt.Println(string(data))
+		return c.JSON(validationError)
 	}
 
 	//Create Table If Not Exist
 	var db = pg.Connect().Conn
-	err := db.AutoMigrate(&models.User{})
-	if err != nil {
-		return err
+	migrateError := db.AutoMigrate(&models.User{})
+	if migrateError != nil {
+		return c.JSON(migrateError)
 	}
 
 	//Create User
-	result := db.Create(&user)
-	fmt.Println(result)
-
-	return c.SendString("Create User")
+	createUser := db.Create(&user)
+	return c.JSON(createUser)
 }
 
 func UpdateUser(c *fiber.Ctx) error {
