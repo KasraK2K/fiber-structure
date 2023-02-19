@@ -44,9 +44,8 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.JSON(migrateError)
 	}
 
-	//Create User
-	createUser := db.Create(&user)
-	return c.JSON(createUser)
+	//Create User and send response
+	return c.JSON(db.Create(&user))
 }
 
 func UpdateUser(c *fiber.Ctx) error {
