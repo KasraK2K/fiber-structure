@@ -1,7 +1,7 @@
 package main
 
 import (
-	"app/handlers"
+	"app/router"
 	"log"
 	"time"
 
@@ -36,7 +36,7 @@ func main() {
 	app.Static("/", "./public")
 
 	//Routes
-	handlers.Routes(app)
+	router.Routes(app)
 
 	//Init & Log
 	log.Fatal(app.Listen(":3000"))

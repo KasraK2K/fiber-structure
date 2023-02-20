@@ -1,7 +1,7 @@
-package handlers
+package router
 
 import (
-	"app/handlers/users"
+	"app/domains/user"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
@@ -12,7 +12,7 @@ func Routes(app *fiber.App) {
 
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
-	users.Routes(v1)
+	user.Routes(v1)
 }
 
 func health(c *fiber.Ctx) error {
