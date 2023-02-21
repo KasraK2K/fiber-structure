@@ -1,10 +1,13 @@
 package user
 
 import (
+	"app/pkg/storages/pg"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Routes(router fiber.Router) {
+	pg.Migrate(&User{})
+
 	userGroup := router.Group("/users")
 
 	userGroup.Get("/", GetAllUsersHandler)
@@ -23,7 +26,18 @@ func GetOneUserHandler(ctx *fiber.Ctx) error {
 }
 
 func CreateUserHandler(ctx *fiber.Ctx) error {
-	return CreateUserLogic(ctx)
+	user := new(User)
+	parseError := ctx.BodyParser(user)
+	if parseError != nil {
+		return parseError
+	}
+
+	result, logicError := CreateUserLogic(user)
+	if logicError != nil {
+		return ctx.JSON(logicError)
+	}
+
+	return ctx.JSON(result)
 }
 
 func UpdateUserHandler(ctx *fiber.Ctx) error {

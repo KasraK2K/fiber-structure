@@ -1,6 +1,8 @@
 package user
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 func GetAllUsersLogic(ctx *fiber.Ctx) error {
 	return ctx.SendString("Get All Users")
@@ -10,25 +12,17 @@ func GetOneUserLogic(ctx *fiber.Ctx) error {
 	return ctx.SendString("Get One User")
 }
 
-func CreateUserLogic(ctx *fiber.Ctx) error {
-	user := new(User)
-	parseError := ctx.BodyParser(user)
-	if parseError != nil {
-		return parseError
-	}
+func CreateUserLogic(user *User) (*User, []interface{}) {
+	var errors []interface{} = nil
 
 	//Validate User Struct
 	validationError := user.Validate()
 	if validationError.Errors != nil {
-		return ctx.JSON(validationError)
+		errors = append(errors, validationError.Errors)
 	}
 
-	result, err := CreateUserRepository(user)
-	if result != true {
-		return ctx.JSON(err)
-	} else {
-		return ctx.JSON(user)
-	}
+	CreateUserRepository(user)
+	return user, errors
 }
 
 func UpdateUserLogic(ctx *fiber.Ctx) error {
