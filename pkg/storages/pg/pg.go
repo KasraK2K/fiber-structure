@@ -18,3 +18,13 @@ func Connect() Connection {
 	}
 	return Connection{Conn: db}
 }
+
+func Migrate(modelStruct interface{}) {
+	var db = Connect().Conn
+
+	//Create Table If Not Exist
+	err := db.AutoMigrate(&modelStruct)
+	if err != nil {
+		return
+	}
+}
